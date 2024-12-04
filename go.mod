@@ -1,3 +1,3 @@
-module github.com/ecs/v2
+module ecs
 
 go 1.23.3

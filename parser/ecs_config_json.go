@@ -1,4 +1,4 @@
-package main
+package parser
 
 type Platform struct {
 	Os   string `json:"os"`

@@ -1,4 +1,4 @@
-package main
+package parser
 
 type ContainerConfig struct {
 	Hostname     string                 `json:"Hostname"`

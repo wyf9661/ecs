@@ -1,4 +1,4 @@
-package main
+package parser
 
 type ImageInfo struct {
 	Config   string   `json:"Config"`

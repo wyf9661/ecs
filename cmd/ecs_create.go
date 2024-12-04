@@ -1,30 +1,13 @@
-package main
+package cmd
 
 import (
+	"ecs/common"
+	"ecs/parser"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 )
-
-// create dir. If exists, ignored.
-func createDir(path string) error {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return os.MkdirAll(path, 0755)
-	}
-	return nil
-}
-
-// create file. If exists, cover it.
-func createFile(path string, content string) error {
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	_, err = file.WriteString(content)
-	return err
-}
 
 // generate rootfs with sylixos directioy structure
 func ecsCreateRootfs(rootPath string) error {
@@ -48,13 +31,13 @@ func ecsCreateRootfs(rootPath string) error {
 
 	// create subdir
 	for _, dir := range subDirs {
-		if err := createDir(rootPath + "/" + dir); err != nil {
+		if err := common.CreateDir(rootPath + "/" + dir); err != nil {
 			return err
 		}
 	}
 
 	// create startup.sh and set stack size with 200000 as default
-	if err := createFile(rootPath+"/etc/startup.sh", "shstack 200000\n"); err != nil {
+	if err := common.CreateFile(rootPath+"/etc/startup.sh", "shstack 200000\n"); err != nil {
 		return err
 	}
 
@@ -64,7 +47,7 @@ func ecsCreateRootfs(rootPath string) error {
 
 func ecsCreateConfigJson(jsonPath string) error {
 
-	jsonData, err := json.MarshalIndent(GlobalConfigStruct, "", "    ")
+	jsonData, err := json.MarshalIndent(parser.GlobalConfigStruct, "", "    ")
 	if err != nil {
 		fmt.Println("Error parsing jsonData:", err)
 		return err
@@ -83,7 +66,7 @@ func ecsCreateConfigJson(jsonPath string) error {
 	return nil
 }
 
-func ecsCreate(rootPath string) error {
+func EcsCreate(rootPath string) error {
 
 	_, err := os.Stat(rootPath)
 	if !os.IsNotExist(err) {
