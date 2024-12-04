@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -56,34 +58,50 @@ func ecsCreateRootfs(rootPath string) error {
 		return err
 	}
 
-	fmt.Println("RootFS generated at", rootPath)
+	log.Println("RootFS generated at", rootPath)
 	return nil
 }
 
-func ecsCreateConfigJson(rootPath string) error {
-	var jsonData []byte = []byte(jsonTemplate)
+func ecsCreateConfigJson(jsonPath string) error {
+
+	jsonData, err := json.MarshalIndent(GlobalConfigStruct, "", "    ")
+	if err != nil {
+		fmt.Println("Error parsing jsonData:", err)
+		return err
+	}
 
 	// To do (optional) use "github.com/tidwall/sjson" package to customlize config.json when creating bundle
 	// sjson.Set() , sjson.SetBytes() ... etc.
 
-	if err := os.WriteFile(rootPath+"/config.json", jsonData, 0644); err != nil {
-		fmt.Println("Error writing file:", err)
+	if err := os.WriteFile(jsonPath, jsonData, 0644); err != nil {
+		log.Println("Error writing file:", err)
 		return err
 	}
 
-	fmt.Println("config.json created successfully.")
+	log.Println("config.json created successfully.")
 
 	return nil
 }
 
 func ecsCreate(rootPath string) error {
+
+	_, err := os.Stat(rootPath)
+	if !os.IsNotExist(err) {
+		log.Printf("The bundle %s already exists and will be removed...\n", rootPath)
+		err = os.RemoveAll(rootPath)
+		if err != nil {
+			log.Fatalf("The bundle removed faild, please retry.\n")
+		}
+		log.Println("The bundle has been removed.")
+	}
+
 	// create rootfs
-	if err := ecsCreateRootfs(rootPath); err != nil {
-		fmt.Println("ecsCreateRootfs failed")
+	if err := ecsCreateRootfs(rootPath + "/rootfs"); err != nil {
+		log.Println("ecsCreateRootfs failed")
 	}
 	// create config.json
-	if err := ecsCreateConfigJson(rootPath); err != nil {
-		fmt.Println("ecsCreateConfigJson failed")
+	if err := ecsCreateConfigJson(rootPath + "/config.json"); err != nil {
+		log.Println("ecsCreateConfigJson failed")
 	}
 	return nil
 }
