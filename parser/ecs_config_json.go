@@ -131,8 +131,8 @@ func InitConfigStruct() {
 		Hostname: "sylixos_ecs",
 		Mounts: []Mount{
 			{
-				Destination: "/etc/lic",
-				Source:      "/etc/lic",
+				Destination: "/lib",
+				Source:      "/lib",
 				Options:     []string{"ro"},
 			},
 		},
