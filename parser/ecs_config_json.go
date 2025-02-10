@@ -110,7 +110,7 @@ func InitConfigStruct() {
 		OciVersion: "1.0.0",
 		Platform: Platform{
 			Os:   "sylixos",
-			Arch: "arm64",
+			Arch: "noarch",
 		},
 		Process: Process{
 			User: User{
