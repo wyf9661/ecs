@@ -135,11 +135,29 @@ func InitConfigStruct() {
 				Source:      "/lib",
 				Options:     []string{"ro"},
 			},
+			{
+				Destination: "/bin/uname",
+				Source:      "/bin/uname",
+				Options:     []string{"rx"},
+			},
+			{
+				Destination: "/bin/tar",
+				Source:      "/bin/tar",
+				Options:     []string{"ro"},
+			},
 		},
 		Sylixos: Sylixos{
 			Devices: []Device{
 				{
 					Path:   "/dev/fb0",
+					Access: "rw",
+				},
+				{
+					Path:   "/dev/rjgt102",
+					Access: "rw",
+				},
+				{
+					Path:   "/dev/lkt4304",
 					Access: "rw",
 				},
 				{
@@ -167,7 +185,7 @@ func InitConfigStruct() {
 				Affinity: []interface{}{},
 				Memory: Memory{
 					KheapLimit:    536870912,
-					MemoryLimitMB: 512,
+					MemoryLimitMB: 2048,
 				},
 				KernelObject: KernelObject{
 					ThreadLimit:        4096,
@@ -225,6 +243,9 @@ func InitConfigStruct() {
 				"env",
 				"rm",
 				"exit",
+				"mkdir",
+				"echo",
+				"mv",
 			},
 			Network: Network{
 				TelnetdEnable: true,
