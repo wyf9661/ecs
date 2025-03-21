@@ -2,6 +2,7 @@ package main
 
 import (
 	"ecs/cmd"
+	"ecs/common"
 	"ecs/parser"
 	"log"
 	"os"
@@ -16,7 +17,7 @@ func main() {
 	parser.InitGlobalImageInfos()
 
 	if len(os.Args) <= 2 {
-		log.Fatalf("Usage:\n\tecs create <bundle>\n\tecs save <bundle> <image.tar:version>/<image.tar>")
+		log.Fatalf("Usage:\n\tecs create <bundle>\n\tecs save <bundle> <image.tar:version>/<image.tar>\n\tecs genbase <basePath>")
 	}
 
 	input := os.Args[1]
@@ -25,6 +26,10 @@ func main() {
 	case "create":
 		if err := cmd.EcsCreate(os.Args[2]); err != nil {
 			log.Println("Error generating RootFS:", err)
+		}
+	case "genbase":
+		if err := common.UntarGz("/opt/realevo-linux-tools/base/default.tar.gz", os.Args[2]); err != nil {
+			log.Println("Error generating Base:", err)
 		}
 	case "save":
 
@@ -49,6 +54,6 @@ func main() {
 			log.Println("Error saving Image:", err)
 		}
 	default:
-		log.Fatalf("Usage:\n\tecs create <bundle>\n\tecs save <bundle> <image.tar:version>/<image.tar>")
+		log.Fatalf("Usage:\n\tecs create <bundle>\n\tecs save <bundle> <image.tar:version>/<image.tar>\n\tecs genbase <basePath>")
 	}
 }
